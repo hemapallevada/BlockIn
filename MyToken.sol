@@ -7,6 +7,9 @@ contract MyToken is  ERC20 {
        minter=msg.sender;
      
     }
+    function TransferInMyToken(address a,address b,uint amount) public{
+transferFrom(a,b,amount);        
+    }
     
      
 }
