@@ -158,5 +158,12 @@ function getReferredPerson(uint postId,address selectedCan) public view returns 
         bool Status;*/
     
 }
+function onCandidateSelect(address CandidateId,uint postId) public{
+    uint totalReferers=postAll[postId].referers[CandidateId].length;
+    uint insAmount=1000/totalReferers;
+    for(uint i=0;i<totalReferers;i++){
+        callTransfer(minter,msg.sender,insAmount);
+    }
+}
 
 }
