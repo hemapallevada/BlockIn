@@ -7,7 +7,7 @@ contract projectPost {
     address CompanyAddress;
     address TokenAddress;
     address EmployeeAddress;
-    address minter public;
+    address minter ;
     uint no_of_posts;
      MyToken TokenObj;
      Company CompanyObj;
@@ -34,6 +34,7 @@ mapping(uint => post) postAll;
    instantiateContractMyToken(msg.sender);
    instantiateCompany(msg.sender);
    instantiateEmployee(msg.sender);
+   minter=callMinter();
   }
  
   function instantiateContractMyToken(address Tokenobj) public{
@@ -52,8 +53,8 @@ EmployeeObject=Employee(EmployeeAddress);
       TokenObj.approve(send,am+100);
         TokenObj.transferFrom(send,received,am);
     }
-    function callMinter() public{
-        minter=TokenObj.getMinter();
+    function callMinter() public view returns(address){
+       return TokenObj.getMinter();
     }
     
 function postJob(string memory RoleName,uint salary,string memory qualificationRequired,uint number_of_available_posts) public{
