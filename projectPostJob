@@ -2,14 +2,16 @@ pragma solidity ^0.6;
 import "https://github.com/hemapallevada/BlockIn/blob/master/MyToken.sol" ;
 import "https://github.com/hemapallevada/BlockIn/blob/master/Company.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol";
-
-contract projectPostJob {
+import "https://github.com/hemapallevada/BlockIn/blob/master/Employee.sol";
+contract projectPost {
     address CompanyAddress;
     address TokenAddress;
+    address EmployeeAddress;
     address minter;
     uint no_of_posts;
      MyToken TokenObj;
      Company CompanyObj;
+     Employee EmployeeObject;
      address owner;
    //Post structure
     struct post{
@@ -22,13 +24,16 @@ contract projectPostJob {
 	mapping(address => address[]) referers;
         bool Status;
     } post cur_post;
+    
 mapping(uint => post) postAll;
-    address ofCompany;
+   
+    
   constructor() public{
    
    no_of_posts=0;
    instantiateContractMyToken(msg.sender);
    instantiateCompany(msg.sender);
+   instantiateEmployee(msg.sender);
   }
  
   function instantiateContractMyToken(address Tokenobj) public{
@@ -39,6 +44,10 @@ TokenObj=MyToken(TokenAddress);
   CompanyAddress=Companyadd;
   CompanyObj=Company(CompanyAddress);
     }  
+    function instantiateEmployee(address Empobj) public{
+EmployeeAddress=Empobj;  
+EmployeeObject=Employee(EmployeeAddress);
+    }
     function callTransfer(address send,address received,uint am) payable public{
       TokenObj.approve(send,am+100);
         TokenObj.transferFrom(send,received,am);
@@ -46,9 +55,6 @@ TokenObj=MyToken(TokenAddress);
     function callMinter() public{
         minter=TokenObj.getMinter();
     }
-    
-  
-    
     
 function postJob(string memory RoleName,uint salary,string memory qualificationRequired,uint number_of_available_posts) public{
         owner=msg.sender;
@@ -92,6 +98,7 @@ no_of_posts+=1;
      }
      function addAReferer(address referer,address referee,uint id) public {
          require(postAll[id].no_of_available_posts!=0,"Post either doesn't exists or filled");
+         require(EmployeeObject.getEmployeeCompanyId(referee)== id,"You should be an Employee of that company");
          postAll[id].referers[referer].push(referee);
      }
   function current_postId() public view returns(uint)  {
