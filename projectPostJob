@@ -13,7 +13,7 @@ contract projectPost {
      Company CompanyObj;
      Employee EmployeeObject;
      address owner;
-   //Post structure
+   
     struct post{
         uint postId;
         uint no_of_available_posts;
@@ -68,10 +68,10 @@ function postJob(string memory RoleName,uint salary,string memory qualificationR
         setRequiredQualification(qualificationRequired);
        setStatus(false);
         uint totalAmount=TokenObj.balanceOf(owner);
-        require(totalAmount>=1000,"No enough balance to post a project");
+        require(totalAmount>=(number_of_available_posts*1000),"No enough balance to post a project");
 postAll[cur_post.postId]=cur_post;
-TokenObj.approve(owner,1000);
-callTransfer(msg.sender,minter,1000);
+TokenObj.approve(owner,number_of_available_posts*1000);
+callTransfer(msg.sender,minter,number_of_available_posts*1000);
 no_of_posts+=1;
     } 
     function setPostId(uint postId) private{
@@ -159,7 +159,7 @@ function getReferredPerson(uint postId,address selectedCan) public view returns 
     
 }
 function onCandidateSelect(address CandidateId,uint postId) public{
-    uint totalReferers=postAll[postId].referers[CandidateId].length;
+    uint totalReferers=getReferredPerson(postId,CandidateId).length;
     uint insAmount=1000/totalReferers;
     for(uint i=0;i<totalReferers;i++){
         callTransfer(minter,msg.sender,insAmount);
