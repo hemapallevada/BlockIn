@@ -15,8 +15,9 @@ mapping(address=> uint) AvailableCompanies;
 mapping(string=> Company) NameToAddress;
 
 function onCompanySignUp(string memory CompanyName ) public{
-    address temp_add=getAddressByName(CompanyName);
-    require(isCompany(temp_add)!=true,"Company With Same Name Already Exists");
+    
+    require(isCompany(msg.sender)!=true,"Company With Same Address Already Exists");
+    require(CompanyWithName(CompanyName)!=true,"Company with this name already Exists");
     Company memory cur_company;
    
     cur_company.CompanyName=CompanyName;
@@ -32,7 +33,13 @@ function isCompany(address add) public view returns(bool){
         return false;
     }return true;
 }
+function CompanyWithName(string memory name) public view returns(bool){
+    if(isCompany(NameToAddress[name].CompanyId))
+        return true;
+    return false;
+}
 function getAddressByName(string memory name) public view returns(address ){
+    require(CompanyWithName(name),"No company with this name");
    return NameToAddress[name].CompanyId;
 }
 function getCompany(address id) public view returns(string memory){
