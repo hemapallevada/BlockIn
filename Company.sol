@@ -1,31 +1,40 @@
 pragma solidity ^0.6;
 contract company{
-    uint company_num;
+    
     constructor()public{
-        company_num=0;
+      
     }
 struct Company{
-    uint CompanyNum;
+   
     address CompanyId;
     string CompanyName;
     }
 
 mapping(address=> Company) AllCompanies;
+mapping(address=> uint) AvailableCompanies;
 mapping(string=> Company) NameToAddress;
 
 function onCompanySignUp(string memory CompanyName ) public{
-    
-    require(NameToAddress[CompanyName].CompanyNum!=0,"Company With Same Name Already Exists");
+    address temp_add=getAddressByName(CompanyName);
+    require(isCompany(temp_add)!=true,"Company With Same Name Already Exists");
     Company memory cur_company;
-    cur_company.CompanyNum=company_num+1;
+   
     cur_company.CompanyName=CompanyName;
     cur_company.CompanyId=msg.sender;
     AllCompanies[msg.sender]=cur_company;
     NameToAddress[CompanyName]=cur_company;
-    company_num+=1;
+    AvailableCompanies[msg.sender]=1;
     
 }
 
+function isCompany(address add) public view returns(bool){
+    if(AvailableCompanies[add]==0){
+        return false;
+    }return true;
+}
+function getAddressByName(string memory name) public view returns(address ){
+   return NameToAddress[name].CompanyId;
+}
 function getCompany(address id) public view returns(string memory){
 
 return AllCompanies[id].CompanyName;
