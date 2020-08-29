@@ -1,5 +1,5 @@
 pragma solidity ^0.6;
-contract Company{
+contract company{
     
     constructor()public{
       
